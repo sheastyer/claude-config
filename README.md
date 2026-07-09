@@ -11,7 +11,8 @@ of maintaining these patterns per-project.
 |---|---|
 | `CLAUDE.md` | Thin entry point loaded for every project. `@`-imports the guides below. |
 | `shared/*.md` | One convention per file, cross-linked with `[[name]]`: git/PR workflow, adversarial pre-commit review, model selection, the advisor, orchestration, critical feedback, steering (where instructions belong), reducing unknowns, HTML-first outputs, loops, session hygiene. |
-| `settings.json` | Personal Claude Code defaults (model, statusline, theme, enabled plugins). Adjust to taste on a shared machine. |
+| `settings.json` | Personal Claude Code defaults (model, statusline, theme, enabled plugins), a read-only permissions allowlist, and the hook wiring. Adjust to taste on a shared machine. |
+| `hooks/*.sh` | Deterministic enforcement of the conventions that must not fail under pressure: `git-safety.sh` (PreToolUse) blocks commits on main, force-pushes touching main, and commits whose staged diff hasn't passed adversarial review; `stop-done-check.sh` (Stop) catches unpushed Claude-authored commits before the session ends. |
 | `skills/claude-code-blog-sync/` | Skill that scans the [Claude Code blog](https://claude.com/blog-category/claude-code) for new best practices and proposes repo updates for approval; `state.json` tracks which posts were already reviewed. |
 | `statusline-command.sh` | Custom status line script referenced by `settings.json`. |
 | `install.sh` | Symlinks the above into `~/.claude/`. |
