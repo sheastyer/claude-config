@@ -1,0 +1,155 @@
+---
+name: claude-code-blog-sync
+description: >-
+  Scan the official Claude Code blog (https://claude.com/blog-category/claude-code)
+  for new posts, digest them with cheap subagents, and propose concrete updates to
+  this claude-config repo (shared/*.md conventions, settings.json, skills) for the
+  user to approve before anything is applied. Use this whenever the user asks to
+  check the Claude Code blog, pull the latest Claude Code best practices, "sync"
+  or "update" their conventions/workflow from Anthropic's guidance, or asks
+  "anything new in Claude Code?" — even if they don't name the blog explicitly.
+  Also the right skill for scheduled/recurring best-practice checks.
+---
+
+# Claude Code blog sync
+
+Keep this config repo current with Anthropic's published Claude Code guidance,
+without re-reading everything each time and without applying anything the user
+hasn't approved.
+
+The repo this skill maintains is a dotfiles-style config symlinked into
+`~/.claude/`: `CLAUDE.md` thinly `@`-imports one convention per file from
+`shared/`, `settings.json` holds defaults, and skills live under `skills/`.
+Read `README.md` at the repo root first if you are unfamiliar with the layout.
+
+## Why the process looks like this
+
+- **State file** — the blog accumulates; without a record of what was already
+  reviewed (and what the user declined), every run re-proposes the same things.
+- **Cheap subagents for reading** — fetching whole posts into an expensive
+  main-model context burns money on grunt work. Digest at Sonnet rates; decide
+  at the main model.
+- **Approval gate** — this repo *is* the user's global agent behavior. Silent
+  edits here change how every future session acts. Nothing lands without an
+  explicit yes.
+
+## Workflow
+
+### 1. Load state
+
+Read `state.json` in this skill's directory. It records every post previously
+seen and its disposition. If it doesn't exist (first run), treat all posts as
+new but check `shared/*.md` before proposing — several older posts are already
+incorporated there.
+
+### 2. Fetch the index
+
+WebFetch `https://claude.com/blog-category/claude-code` and list every post
+(title, URL, date). Note the "View more" pagination: only page deeper when the
+*oldest* post on page one is still unknown (the new posts may extend past the
+page boundary); in the usual mixed case — newest posts unknown, older ones
+already in state — page one already contains everything new, so stop there.
+Posts in `state.json` with a settled disposition are skipped — including `declined` (do not re-propose
+declined items unless the user asks to revisit them). Posts marked `proposed`
+carry an undecided proposal from a previous run: re-surface it in this run's
+summary rather than re-digesting the post.
+
+### 3. Digest new posts with cheap subagents
+
+Never fetch full post content in the main context. Spawn fresh
+`general-purpose` subagents with an explicit `model: sonnet` (never inherit —
+that silently runs workers at the orchestrator's rate), batching 2–4 posts per
+agent, launched in parallel in one turn. Ask each for, per post:
+
+- Core thesis (1–2 sentences)
+- Concrete recommendations / decision rules (precise; quote key phrasing)
+- New features or commands mentioned
+- Anything actionable for a personal Claude Code config repo
+
+Skip digestion for posts that are obviously not workflow-relevant
+(hackathon winner showcases, partnership/availability announcements) — record
+them in state as `irrelevant` with a one-line reason instead.
+
+### 4. Compare against the repo and draft proposals
+
+Read the current `shared/*.md` files, `CLAUDE.md`, and `settings.json`. For
+each digest, decide what (if anything) it changes:
+
+- **Already covered** — the repo says the same thing; record `covered`
+  with a pointer to the covering file, propose nothing.
+- **Update** — the repo covers the topic but the post adds/corrects something;
+  propose an edit to the existing `shared/<name>.md`.
+- **New convention** — a durable cross-project practice with no home; propose
+  a new `shared/<name>.md` plus its one-line `@`-import in `CLAUDE.md`
+  (keep `CLAUDE.md` thin; one convention per file; cross-link with `[[name]]`).
+- **New skill / settings change** — repeatable procedures become a skill under
+  `skills/`; configuration becomes a `settings.json` edit.
+
+Hold a high bar: this file set loads into *every* session, so each addition
+taxes all future context. Prefer tightening an existing guide over adding a
+new one; skip anything speculative, redundant, or product-marketing-shaped.
+
+### 5. Present proposals and get approval
+
+Show the user a numbered summary — for each proposal: the source post (title +
+date + URL), the one-paragraph takeaway, and the specific change (which file,
+roughly what text). Then ask which to apply (AskUserQuestion with multiSelect
+works well; include a "none" path). **Do not make any behavior-changing edit
+(`shared/*.md`, `CLAUDE.md`, `settings.json`, `install.sh`, skills) before
+this approval.** `state.json` is exempt from the gate — it's bookkeeping, not
+behavior: on an unattended run (scheduled/background), stop after producing
+the summary, but still record `covered`/`irrelevant` verdicts, mark undecided
+items `proposed`, and advance `last_checked`, so the next run doesn't re-read
+the whole backlog.
+
+### 6. Apply approved changes and record state
+
+Apply only the approved proposals, following this repo's own conventions
+(they're loaded in context: fresh branch off `origin/main`, adversarial
+pre-commit review before committing, push, draft PR, report the PR URL).
+If a new top-level file/dir must reach `~/.claude/`, add it to the `ITEMS`
+array in `install.sh` and mention that `./install.sh` needs a re-run.
+
+Update `state.json` in the same commit — every post seen this run gets an
+entry with its disposition, plus date and a one-line note. Set `last_checked`
+to today. Update state even on a run that proposes nothing, so the next run
+skips what this one already read.
+
+## state.json format
+
+```json
+{
+  "last_checked": "2026-07-08",
+  "posts": {
+    "https://claude.com/blog/example-post": {
+      "title": "Example post",
+      "published": "2026-06-18",
+      "disposition": "incorporated",
+      "note": "folded into shared/model-selection.md"
+    }
+  }
+}
+```
+
+Dispositions: `incorporated` (an approved change was applied because of this
+post), `covered` (repo already said it — nothing was changed), `declined`
+(user said no — never re-propose), `irrelevant` (no workflow content —
+skipped without digestion), `proposed` (proposal made, user hasn't decided —
+re-surface next run without re-digesting). Keeping `incorporated` and
+`covered` distinct preserves the audit trail of what this skill actually
+changed versus what was already true.
+
+## Gotchas
+
+- WebFetch returns claude.com links as relative paths (`/blog/...`) — prepend
+  `https://claude.com` before storing or fetching them.
+- Subagent digests can misquote. Before an edit that hinges on a specific
+  claim (a command name, a setting, a number), have the applying step verify
+  it against the post rather than trusting the digest — same adversarial habit
+  as pre-commit review.
+- Hackathon showcases, customer case studies, and availability announcements
+  look substantive in digests but rarely change a personal workflow — that's
+  what the `irrelevant` fast path is for.
+- The proposal summary is the deliverable, not a formality: each item needs
+  the source post, the takeaway, and the exact file-level change, or the user
+  can't approve it from a phone.

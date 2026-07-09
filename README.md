@@ -12,6 +12,7 @@ of maintaining these patterns per-project.
 | `CLAUDE.md` | Thin entry point loaded for every project. `@`-imports the guides below. |
 | `shared/*.md` | One convention per file, cross-linked with `[[name]]`: git/PR workflow, adversarial pre-commit review, model selection, the advisor, orchestration, critical feedback. |
 | `settings.json` | Personal Claude Code defaults (model, statusline, theme, enabled plugins). Adjust to taste on a shared machine. |
+| `skills/claude-code-blog-sync/` | Skill that scans the [Claude Code blog](https://claude.com/blog-category/claude-code) for new best practices and proposes repo updates for approval; `state.json` tracks which posts were already reviewed. |
 | `statusline-command.sh` | Custom status line script referenced by `settings.json`. |
 | `install.sh` | Symlinks the above into `~/.claude/`. |
 
@@ -50,3 +51,7 @@ directly — commit and push to propagate to your other machines.
 
 Add a new global convention as its own `shared/<name>.md` file and add one
 `@~/.claude/shared/<name>.md` import line to `CLAUDE.md` — keep `CLAUDE.md` thin.
+
+Add a new skill as `skills/<name>/SKILL.md` (plus any bundled resources) and
+list `skills/<name>` in `install.sh`'s `ITEMS` so it links into
+`~/.claude/skills/` alongside machine-local skills.
