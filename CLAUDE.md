@@ -21,3 +21,4 @@ repo's own `CLAUDE.md`.
 @~/.claude/shared/reducing-unknowns.md
 @~/.claude/shared/html-outputs.md
 @~/.claude/shared/loops.md
+@~/.claude/shared/session-hygiene.md

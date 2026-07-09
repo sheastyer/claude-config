@@ -34,3 +34,5 @@ prompting harder. (Source: "Getting started with loops", June 2026.)
 Proactive automation — recurring streams of well-defined work (triage,
 dependency upgrades, migrations) — is `/schedule` + `/goal` + skills
 composed, with [[orchestration]] patterns for the fan-out inside each run.
+Pair unattended runs with auto mode (classifier-gated permissions — safer
+than skipping prompts outright), preferably in an isolated environment.

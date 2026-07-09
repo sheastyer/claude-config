@@ -46,13 +46,28 @@ incorporated there.
 
 ### 2. Fetch the index
 
-WebFetch `https://claude.com/blog-category/claude-code` and list every post
-(title, URL, date). Note the "View more" pagination: only page deeper when the
-*oldest* post on page one is still unknown (the new posts may extend past the
-page boundary); in the usual mixed case — newest posts unknown, older ones
-already in state — page one already contains everything new, so stop there.
-Posts in `state.json` with a settled disposition are skipped — including `declined` (do not re-propose
-declined items unless the user asks to revisit them). Posts marked `proposed`
+Run the bundled scraper (plain HTTP — the page's "View more" button is
+server-side Webflow pagination, so no browser is needed, but a single
+WebFetch of the category page sees only the first ~15 posts and silently
+misses the rest):
+
+```bash
+python3 scripts/fetch_index.py --floor <YYYY-MM-DD>
+```
+
+It walks every page and prints `{url, title, date}` for each post at or
+after the floor, newest first. Pick the floor so the same articles aren't
+re-scraped run after run:
+
+- **Normal run:** `last_checked` from `state.json` minus ~30 days (the
+  overlap is cheap insurance against edited/backdated posts; the state check
+  below dedupes it).
+- **First run or explicit backfill:** the script's default floor,
+  `2025-11-01` — the hard limit on how far back this skill ever looks.
+
+Posts in `state.json` with a settled disposition are skipped — including
+`declined` (do not re-propose declined items unless the user asks to revisit
+them). Posts marked `proposed`
 carry an undecided proposal from a previous run: re-surface it in this run's
 summary rather than re-digesting the post.
 
@@ -97,7 +112,12 @@ each digest, decide what (if anything) it changes:
 
 Then make one deliberate staleness pass in the other direction: sweep the
 existing `shared/*.md` guides against everything digested this run and ask
-of each convention, "does anything newer supersede this?" Additions get
+of each convention, "does anything newer supersede this?" A useful lens
+(from "Improving skill-creator", Mar 2026): classify each guide or skill as
+**capability uplift** (techniques that beat the base model — these decay as
+models improve and deserve the retirement scrutiny) or **encoded
+preference** (the user's own workflow and conventions — durable as long as
+they track the real process). Additions get
 proposed every run by default; retirements only happen if something actively
 looks for them, so a config repo naturally accretes. The pass surfaces
 *candidates*; a candidate becomes a retirement proposal only once matched to
@@ -167,8 +187,14 @@ changed versus what was already true.
 
 ## Gotchas
 
+- Never inventory the blog with a bare WebFetch of the category page — it
+  returns only the first page (~15 posts) and there is no signal that more
+  exist beyond a JS "View more" button. `scripts/fetch_index.py` follows the
+  underlying `?<listid>_page=N` pagination and is the only supported way to
+  list posts.
 - WebFetch returns claude.com links as relative paths (`/blog/...`) — prepend
-  `https://claude.com` before storing or fetching them.
+  `https://claude.com` before storing or fetching them (the scraper already
+  outputs absolute URLs).
 - Subagent digests can misquote. Before an edit that hinges on a specific
   claim (a command name, a setting, a number), have the applying step verify
   it against the post rather than trusting the digest — same adversarial habit

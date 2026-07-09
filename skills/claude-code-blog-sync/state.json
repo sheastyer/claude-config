@@ -90,6 +90,174 @@
       "published": "2026-05-14",
       "disposition": "irrelevant",
       "note": "startup strategy, not workflow content"
+    },
+    "https://claude.com/blog/how-anthropic-uses-claude-cybersecurity": {
+      "title": "How Anthropic's cybersecurity team built a threat detection platform with Claude Code",
+      "published": "2026-05-12",
+      "disposition": "irrelevant",
+      "note": "internal case study, no durable personal-workflow practice"
+    },
+    "https://claude.com/blog/how-a-non-technical-project-manager-built-and-shipped-a-stress-management-app-with-claude-code-in-six-weeks": {
+      "title": "How a non-technical project manager built and shipped a stress management app with Claude Code in six weeks",
+      "published": "2026-05-01",
+      "disposition": "irrelevant",
+      "note": "beginner case study"
+    },
+    "https://claude.com/blog/claude-api-skill": {
+      "title": "Claude API skill now in CodeRabbit, JetBrains, Resolve AI, and Warp",
+      "published": "2026-04-29",
+      "disposition": "irrelevant",
+      "note": "partner availability announcement"
+    },
+    "https://claude.com/blog/meet-the-winners-of-our-built-with-opus-4-6-claude-code-hackathon": {
+      "title": "Meet the winners of our Built with Opus 4.6 Claude Code hackathon",
+      "published": "2026-04-20",
+      "disposition": "irrelevant",
+      "note": "hackathon showcase"
+    },
+    "https://claude.com/blog/product-management-on-the-ai-exponential": {
+      "title": "Product management on the AI exponential",
+      "published": "2026-03-19",
+      "disposition": "irrelevant",
+      "note": "PM essay, org-level"
+    },
+    "https://claude.com/blog/code-with-claude-san-francisco-london-tokyo": {
+      "title": "Code with Claude comes to San Francisco, London, and Tokyo",
+      "published": "2026-03-18",
+      "disposition": "irrelevant",
+      "note": "event announcement"
+    },
+    "https://claude.com/blog/how-ai-helps-break-cost-barrier-cobol-modernization": {
+      "title": "COBOL Modernization with AI: Breaking the Cost Barrier",
+      "published": "2026-02-23",
+      "disposition": "irrelevant",
+      "note": "enterprise marketing case study"
+    },
+    "https://claude.com/blog/eight-trends-defining-how-software-gets-built-in-2026": {
+      "title": "Eight trends defining how software gets built in 2026",
+      "published": "2026-01-21",
+      "disposition": "irrelevant",
+      "note": "trends essay, no config-actionable content"
+    },
+    "https://claude.com/blog/key-benefits-transitioning-agentic-coding": {
+      "title": "What are the key benefits of transitioning to agentic coding for software development?",
+      "published": "2025-12-01",
+      "disposition": "irrelevant",
+      "note": "introductory explainer"
+    },
+    "https://claude.com/blog/building-companies-with-claude-code": {
+      "title": "How three YC startups built their companies with Claude Code",
+      "published": "2025-11-17",
+      "disposition": "irrelevant",
+      "note": "startup case study"
+    },
+    "https://claude.com/blog/using-claude-code-session-management-and-1m-context": {
+      "title": "Using Claude Code: session management and 1M context",
+      "published": "2026-04-15",
+      "disposition": "incorporated",
+      "note": "shared/session-hygiene.md added (session boundaries, steered /compact, /rewind, subagent test)"
+    },
+    "https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything": {
+      "title": "Lessons from building Claude Code: Prompt caching is everything",
+      "published": "2026-04-30",
+      "disposition": "incorporated",
+      "note": "cache-preserving habits folded into shared/session-hygiene.md (no mid-session model swaps, stable tool set, volatile data out of prompts)"
+    },
+    "https://claude.com/blog/onboarding-claude-code-like-a-new-developer-lessons-from-17-years-of-development": {
+      "title": "Onboarding Claude Code like a new developer: Lessons from 17 years of development",
+      "published": "2026-04-28",
+      "disposition": "incorporated",
+      "note": "reference-don't-embed and explicit load conditions added to shared/steering.md"
+    },
+    "https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work": {
+      "title": "Building agents with Skills: Equipping agents for specialized work",
+      "published": "2026-01-22",
+      "disposition": "incorporated",
+      "note": "progressive-disclosure sizing targets added to shared/steering.md"
+    },
+    "https://claude.com/blog/how-to-create-skills-key-steps-limitations-and-examples": {
+      "title": "How to create Skills: Key steps, limitations, and examples",
+      "published": "2025-11-19",
+      "disposition": "incorporated",
+      "note": "build gate (5x done/10x more) added to shared/steering.md; testing guidance superseded by Mar 2026 skill-creator evals"
+    },
+    "https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills": {
+      "title": "Improving skill-creator: Test, measure, and refine Agent Skills",
+      "published": "2026-03-03",
+      "disposition": "incorporated",
+      "note": "capability-uplift vs encoded-preference taxonomy added to shared/steering.md and as the blog-sync retirement lens"
+    },
+    "https://claude.com/blog/seeing-like-an-agent": {
+      "title": "Seeing like an agent: how we design tools in Claude Code",
+      "published": "2026-04-10",
+      "disposition": "incorporated",
+      "note": "high-bar-for-new-tools note added to shared/steering.md; rest validates existing progressive-disclosure architecture"
+    },
+    "https://claude.com/blog/subagents-in-claude-code": {
+      "title": "How and when to use subagents in Claude Code",
+      "published": "2026-04-07",
+      "disposition": "incorporated",
+      "note": "concrete fan-out thresholds (10+ files / 3+ independent pieces, no shared-file edits, specify returns) added to shared/orchestration.md"
+    },
+    "https://claude.com/blog/auto-mode": {
+      "title": "Auto mode for Claude Code",
+      "published": "2026-03-24",
+      "disposition": "incorporated",
+      "note": "auto-mode pairing for unattended runs added to shared/loops.md"
+    },
+    "https://claude.com/blog/best-practices-for-using-claude-opus-4-7-with-claude-code": {
+      "title": "Best practices for using Claude Opus 4.7 with Claude Code",
+      "published": "2026-04-16",
+      "disposition": "covered",
+      "note": "superseded by Jul 2026 model/effort guidance already encoded in shared/model-selection.md; nothing in repo references 4.7-era advice"
+    },
+    "https://claude.com/blog/using-claude-md-files": {
+      "title": "Using CLAUDE.md files: Customizing Claude Code for your codebase",
+      "published": "2025-11-25",
+      "disposition": "covered",
+      "note": "repo's thin CLAUDE.md + shared/*.md imports already follow this; placement guidance superseded by Jun 2026 steering post"
+    },
+    "https://claude.com/blog/how-to-configure-hooks": {
+      "title": "Claude Code power user customization: How to configure hooks",
+      "published": "2025-12-11",
+      "disposition": "covered",
+      "note": "hook placement covered by shared/steering.md; event/matcher/exit-code details are reference material that belongs in docs, not always-loaded guides"
+    },
+    "https://claude.com/blog/improving-frontend-design-through-skills": {
+      "title": "Improving frontend design through Skills",
+      "published": "2025-11-12",
+      "disposition": "covered",
+      "note": "frontend-design plugin already enabled in settings.json"
+    },
+    "https://claude.com/blog/code-review": {
+      "title": "Bringing Code Review to Claude Code",
+      "published": "2026-03-09",
+      "disposition": "irrelevant",
+      "note": "Team/Enterprise GitHub-App product announcement; local /code-review already exists and pre-commit-review.md covers the local gate"
+    },
+    "https://claude.com/blog/preview-review-and-merge-with-claude-code": {
+      "title": "Bringing automated preview, review, and merge to Claude Code on desktop",
+      "published": "2026-02-20",
+      "disposition": "irrelevant",
+      "note": "desktop feature announcement, superseded by Apr 2026 desktop redesign; nothing config-encodable"
+    },
+    "https://claude.com/blog/claude-code-desktop-redesign": {
+      "title": "Redesigning Claude Code on desktop for parallel agents",
+      "published": "2026-04-14",
+      "disposition": "irrelevant",
+      "note": "desktop UI feature tour, nothing config-encodable"
+    },
+    "https://claude.com/blog/complete-guide-to-building-skills-for-claude": {
+      "title": "A complete guide to building skills for Claude",
+      "published": "2026-01-29",
+      "disposition": "irrelevant",
+      "note": "landing page for a gated PDF ebook, no accessible content beyond generic framing"
+    },
+    "https://claude.com/blog/contribution-metrics": {
+      "title": "Understand Claude Code\u2019s impact with contribution metrics",
+      "published": "2026-01-29",
+      "disposition": "irrelevant",
+      "note": "Team/Enterprise analytics dashboard, not personal-config material"
     }
   }
 }

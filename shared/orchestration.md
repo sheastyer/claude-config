@@ -49,6 +49,11 @@ model (see the `inherit` trap below).
   at the orchestrator's rate, which is exactly the cost trap to avoid.
 - Run independent subtasks **in parallel** (spawn them in one turn) and let the
   orchestrator synthesize.
+- **Concrete fan-out signals:** a task that means exploring ten or more files,
+  or three or more independent pieces of work. Below that, the coordination
+  overhead usually isn't worth it.
+- Never let two subagents edit the same file in parallel, and tell each one
+  exactly what to return — a summary, a diff, a verdict — not "do the thing."
 - Prime each subagent minimally — the specific subtask, the constraints it
   can't infer, and where to look — not the whole conversation.
 - **Verify what matters.** For delegated results that feed a decision or a

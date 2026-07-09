@@ -23,17 +23,32 @@ Explanatory, Learning) before writing a custom one.
 
 ## Writing skills well
 
+- **Build gate first:** have I done this task five times, and will I do it
+  ten more? Don't build skills speculatively.
 - One category per skill — a skill that straddles several confuses the agent.
 - Write the `description` for the *model's* discovery decision, not for
-  humans: include the trigger phrases users actually say.
+  humans: include the trigger phrases users actually say, and explicit load
+  conditions for critical skills ("ALWAYS load when investigating bugs").
 - Don't restate what the model already knows; spend the lines on what pushes
   it off its default behavior, and keep a "gotchas" section for known failure
   points. Avoid railroading — leave room to adapt.
+- **Reference, don't embed:** point at central docs rather than duplicating
+  them, and size for progressive disclosure — metadata ~50 tokens, SKILL.md
+  body ~500, heavier reference files loaded only on demand.
 - Bundle scripts and templates so turns go to composition, not boilerplate;
   persist state in JSON or append-only logs next to the skill.
 - Guardrails you don't want globally can ship as skill-scoped hooks that
   activate only while the skill runs (Anthropic's `/careful` blocks
   destructive commands; `/freeze` restricts edits to named directories).
+- Know which kind you're writing: **capability-uplift** skills (techniques
+  that beat the base model today) decay as models improve — re-test them per
+  model generation and expect to retire them; **encoded-preference** skills
+  (your workflow, your conventions) stay useful as long as they track the
+  real process.
+
+The same restraint applies to tools: each added tool costs cognitive load
+and context, so keep a high bar and prefer progressive disclosure —
+exploration and on-demand loading — over another tool definition.
 
 Verification skills — encoding "how to check this worked" with measurable
 criteria — showed the biggest quality gains of any category in Anthropic's

@@ -10,7 +10,7 @@ of maintaining these patterns per-project.
 | Path | What it is |
 |---|---|
 | `CLAUDE.md` | Thin entry point loaded for every project. `@`-imports the guides below. |
-| `shared/*.md` | One convention per file, cross-linked with `[[name]]`: git/PR workflow, adversarial pre-commit review, model selection, the advisor, orchestration, critical feedback, steering (where instructions belong), reducing unknowns, HTML-first outputs, loops. |
+| `shared/*.md` | One convention per file, cross-linked with `[[name]]`: git/PR workflow, adversarial pre-commit review, model selection, the advisor, orchestration, critical feedback, steering (where instructions belong), reducing unknowns, HTML-first outputs, loops, session hygiene. |
 | `settings.json` | Personal Claude Code defaults (model, statusline, theme, enabled plugins). Adjust to taste on a shared machine. |
 | `skills/claude-code-blog-sync/` | Skill that scans the [Claude Code blog](https://claude.com/blog-category/claude-code) for new best practices and proposes repo updates for approval; `state.json` tracks which posts were already reviewed. |
 | `statusline-command.sh` | Custom status line script referenced by `settings.json`. |
