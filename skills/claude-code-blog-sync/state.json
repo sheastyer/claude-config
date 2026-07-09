@@ -16,14 +16,14 @@
     "https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns": {
       "title": "A field guide to Claude Fable 5: Finding your unknowns",
       "published": "2026-07-06",
-      "disposition": "proposed",
-      "note": "proposed shared/reducing-unknowns.md (blind spot pass, interviews, deviation log, quiz)"
+      "disposition": "incorporated",
+      "note": "shared/reducing-unknowns.md added (blind spot pass, interviews, deviations log, explainer+quiz)"
     },
     "https://claude.com/blog/getting-started-with-loops": {
       "title": "Getting started with loops",
       "published": "2026-06-30",
-      "disposition": "proposed",
-      "note": "proposed loops convention: deterministic stop criteria for /goal//loop, /schedule for unattended"
+      "disposition": "incorporated",
+      "note": "shared/loops.md added (primitive table, deterministic stop criteria, /schedule for unattended)"
     },
     "https://claude.com/blog/agent-identity-access-model": {
       "title": "Agent identity in Claude Tag: a new access model for autonomous, team-wide AI",
@@ -34,8 +34,8 @@
     "https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more": {
       "title": "Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents",
       "published": "2026-06-18",
-      "disposition": "proposed",
-      "note": "proposed shared/steering.md (mechanism decision table + anti-patterns) and hook enforcement of pre-commit review"
+      "disposition": "incorporated",
+      "note": "shared/steering.md added (decision table, anti-patterns, skill-authoring practices); PreToolUse hook enforcing pre-commit review was DECLINED 2026-07-08 - do not re-propose"
     },
     "https://claude.com/blog/meet-the-winners-of-our-claude-opus-4-8-build-day-hackathon": {
       "title": "Meet the winners of our Claude Opus 4.8 Build Day hackathon",
@@ -64,14 +64,14 @@
     "https://claude.com/blog/running-an-ai-native-engineering-org": {
       "title": "Running an AI-native engineering org",
       "published": "2026-06-03",
-      "disposition": "proposed",
-      "note": "proposed one-line automation heuristic for CLAUDE.md working style; rest is org-level"
+      "disposition": "incorporated",
+      "note": "automation heuristic added to CLAUDE.md working style; org-level content not applicable"
     },
     "https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code": {
       "title": "A harness for every task: dynamic workflows in Claude Code",
       "published": "2026-06-02",
-      "disposition": "proposed",
-      "note": "orchestration.md covers the basics; proposed extending it with the seven named patterns and /loop+/goal pairing"
+      "disposition": "incorporated",
+      "note": "orchestration.md extended with seven named patterns, token budgets, /loop+/goal pairing"
     },
     "https://claude.com/blog/how-coderabbit-used-claude-to-build-an-agent-orchestration-system": {
       "title": "How CodeRabbit used Claude to build an agent orchestration system",
@@ -82,8 +82,8 @@
     "https://claude.com/blog/using-claude-code-the-unreasonable-effectiveness-of-html": {
       "title": "Using Claude Code: The unreasonable effectiveness of HTML",
       "published": "2026-05-20",
-      "disposition": "proposed",
-      "note": "proposed shared/html-outputs.md (HTML-first for long docs, comparisons, shared reports)"
+      "disposition": "incorporated",
+      "note": "shared/html-outputs.md added (HTML-first for long docs, comparisons, shared reports, throwaway tools)"
     },
     "https://claude.com/blog/the-founders-playbook": {
       "title": "The founder's playbook: Building an AI-native startup",
