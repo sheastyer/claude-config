@@ -16,6 +16,7 @@ CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 ITEMS=(
   "CLAUDE.md"
   "shared"
+  "hooks"
   "settings.json"
   "statusline-command.sh"
   # Skills are linked per-skill (not the whole skills/ dir) so repo skills can

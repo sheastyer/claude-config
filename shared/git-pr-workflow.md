@@ -59,3 +59,17 @@ Before you consider a coding task complete or end the session, verify **all** of
 If any of these is missing, do it before finishing. If you genuinely cannot
 (e.g. no remote configured), state clearly that the work is only local and where
 the branch/worktree lives so it doesn't get lost.
+
+## Enforcement hooks
+
+Parts of this workflow are enforced deterministically by hooks in
+`~/.claude/hooks/` (wired in `settings.json`), not just by this prose:
+
+- `git-safety.sh` (PreToolUse) blocks commits made directly on `main`/`master`,
+  force-pushes that touch them, and commits whose staged diff hasn't passed
+  adversarial review (see `pre-commit-review.md` for recording the approval).
+  Its block messages explain the compliant path and the deliberate overrides
+  (`CLAUDE_ALLOW_MAIN=1`, `CLAUDE_SKIP_REVIEW=1`).
+- `stop-done-check.sh` (Stop) blocks ending the turn once per new commit state
+  when the branch has unpushed Claude-authored commits — push and open the PR,
+  or report exactly where the work lives.

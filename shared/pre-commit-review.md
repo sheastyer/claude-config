@@ -34,6 +34,22 @@ contains code changes (skip only for trivial non-code commits — docs typos,
 
 5. **Loop until `APPROVE`.** Only then run `git commit`.
 
+6. **Record the approval for the commit gate.** A `PreToolUse` hook
+   (`~/.claude/hooks/git-safety.sh`) blocks `git commit` until the hash of the
+   approved staged diff is on file. After the reviewer's `APPROVE`, run:
+
+   ```bash
+   gitdir=$(git rev-parse --absolute-git-dir) && mkdir -p "$gitdir/claude" && \
+   git diff --staged | (shasum -a 256 2>/dev/null || sha256sum) | awk '{print $1}' \
+     > "$gitdir/claude/review-approved"
+   ```
+
+   then commit **without touching the staged diff** — any change to it
+   invalidates the approval, which is the point: the recorded hash is proof
+   that exactly this diff was reviewed. For the trivial non-code commits this
+   guide already exempts, bypass the gate deliberately with
+   `CLAUDE_SKIP_REVIEW=1 git commit ...` (and still say so when you skip).
+
 ## Reporting
 When you commit, briefly note that the adversarial review passed and summarize
 what it flagged and how you resolved it, so I can see what changed as a result.
