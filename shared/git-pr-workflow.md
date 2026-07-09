@@ -31,6 +31,10 @@ unpushed branches are a real problem.
 - **Draft = "in progress."** This is the signal that the PR is not ready for me
   to merge yet.
 - Include a short checklist in the PR body of what's done and what's left.
+- **Before pushing more commits to an existing PR's branch, confirm the PR is
+  still open** (`gh pr view <number> --json state`). If it was merged or closed
+  since the last push, don't push to the dead branch — start a fresh branch off
+  the updated default branch and open a new PR for the follow-up.
 
 ## 3. Flip to "ready" when finished
 
