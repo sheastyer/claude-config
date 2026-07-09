@@ -4,11 +4,13 @@ description: >-
   Scan the official Claude Code blog (https://claude.com/blog-category/claude-code)
   for new posts, digest them with cheap subagents, and propose concrete updates to
   this claude-config repo (shared/*.md conventions, settings.json, skills) for the
-  user to approve before anything is applied. Use this whenever the user asks to
-  check the Claude Code blog, pull the latest Claude Code best practices, "sync"
-  or "update" their conventions/workflow from Anthropic's guidance, or asks
-  "anything new in Claude Code?" — even if they don't name the blog explicitly.
-  Also the right skill for scheduled/recurring best-practice checks.
+  user to approve before anything is applied — including retiring existing
+  conventions that newer guidance or model capabilities have made obsolete. Use
+  this whenever the user asks to check the Claude Code blog, pull the latest
+  Claude Code best practices, "sync" or "update" their conventions/workflow from
+  Anthropic's guidance, prune outdated practices, or asks "anything new in Claude
+  Code?" — even if they don't name the blog explicitly. Also the right skill for
+  scheduled/recurring best-practice checks.
 ---
 
 # Claude Code blog sync
@@ -70,7 +72,7 @@ Skip digestion for posts that are obviously not workflow-relevant
 (hackathon winner showcases, partnership/availability announcements) — record
 them in state as `irrelevant` with a one-line reason instead.
 
-### 4. Compare against the repo and draft proposals
+### 4. Compare against the repo and draft proposals — additions *and* retirements
 
 Read the current `shared/*.md` files, `CLAUDE.md`, and `settings.json`. For
 each digest, decide what (if anything) it changes:
@@ -84,16 +86,40 @@ each digest, decide what (if anything) it changes:
   (keep `CLAUDE.md` thin; one convention per file; cross-link with `[[name]]`).
 - **New skill / settings change** — repeatable procedures become a skill under
   `skills/`; configuration becomes a `settings.json` edit.
+- **Retire** — existing repo guidance that newer material has made obsolete:
+  a workaround for a model limitation that no longer exists, a practice a
+  newer post walks back or supersedes, or a feature/command that was renamed
+  or removed. Propose deleting or pruning the stale text, citing the newer
+  source. Removing a whole `shared/<name>.md` guide also removes its
+  `CLAUDE.md` import line (`shared/` is linked as one directory, so
+  `install.sh` is untouched); removing a whole skill also removes its
+  per-skill `install.sh` `ITEMS` entry.
 
-Hold a high bar: this file set loads into *every* session, so each addition
-taxes all future context. Prefer tightening an existing guide over adding a
-new one; skip anything speculative, redundant, or product-marketing-shaped.
+Then make one deliberate staleness pass in the other direction: sweep the
+existing `shared/*.md` guides against everything digested this run and ask
+of each convention, "does anything newer supersede this?" Additions get
+proposed every run by default; retirements only happen if something actively
+looks for them, so a config repo naturally accretes. The pass surfaces
+*candidates*; a candidate becomes a retirement proposal only once matched to
+a citable source — a post digested this run, or a changelog/release-note URL
+fetched to confirm the capability shift. Record source-backed retirements in
+`state.json` keyed by the citing document's URL (the schema takes any URL,
+not just blog posts) so a declined retirement is never re-proposed; a hunch
+with no source stays a note in the run summary, not a proposal.
+
+Hold a high bar in both directions: this file set loads into *every*
+session, so each addition taxes all future context — prefer tightening an
+existing guide over adding a new one, and skip anything speculative,
+redundant, or product-marketing-shaped. And prune on evidence, never on the
+vibe that "models are better now" — that's the difference between pruning a
+repo and hollowing it out.
 
 ### 5. Present proposals and get approval
 
 Show the user a numbered summary — for each proposal: the source post (title +
 date + URL), the one-paragraph takeaway, and the specific change (which file,
-roughly what text). Then ask which to apply (AskUserQuestion with multiSelect
+roughly what text). Present retirements alongside additions, quoting the text
+that would be removed and the newer source that supersedes it. Then ask which to apply (AskUserQuestion with multiSelect
 works well; include a "none" path). **Do not make any behavior-changing edit
 (`shared/*.md`, `CLAUDE.md`, `settings.json`, `install.sh`, skills) before
 this approval.** `state.json` is exempt from the gate — it's bookkeeping, not

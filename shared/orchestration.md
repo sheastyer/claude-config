@@ -30,6 +30,8 @@ model (see the `inherit` trap below).
 
 **Delegate to cheaper subagents:**
 - File discovery, code search, reading many files (→ `haiku`/`sonnet`).
+- Bulk web research — fetching and digesting blog posts, docs pages, articles
+  (→ `sonnet`, batched a few sources per agent, returning structured digests).
 - Mechanical edits repeated across files, boilerplate drafting.
 - Running tests / builds and collecting output.
 - Independent investigations that only need to return a summary.
