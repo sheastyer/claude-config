@@ -30,6 +30,8 @@ model (see the `inherit` trap below).
 
 **Delegate to cheaper subagents:**
 - File discovery, code search, reading many files (→ `haiku`/`sonnet`).
+- Bulk web research — fetching and digesting blog posts, docs pages, articles
+  (→ `sonnet`, batched a few sources per agent, returning structured digests).
 - Mechanical edits repeated across files, boilerplate drafting.
 - Running tests / builds and collecting output.
 - Independent investigations that only need to return a summary.
@@ -47,6 +49,11 @@ model (see the `inherit` trap below).
   at the orchestrator's rate, which is exactly the cost trap to avoid.
 - Run independent subtasks **in parallel** (spawn them in one turn) and let the
   orchestrator synthesize.
+- **Concrete fan-out signals:** a task that means exploring ten or more files,
+  or three or more independent pieces of work. Below that, the coordination
+  overhead usually isn't worth it.
+- Never let two subagents edit the same file in parallel, and tell each one
+  exactly what to return — a summary, a diff, a verdict — not "do the thing."
 - Prime each subagent minimally — the specific subtask, the constraints it
   can't infer, and where to look — not the whole conversation.
 - **Verify what matters.** For delegated results that feed a decision or a
@@ -67,6 +74,33 @@ intermediate results out of my context, and is resumable.
   otherwise default to the session's model.
 - Prefer the two-wave shape where it fits: workers produce results, then a
   second wave adversarially verifies them before they're reported.
+
+## Named workflow patterns
+
+Seven shapes worth asking for by name (from Anthropic's dynamic-workflows
+post, June 2026). They exist to counter three failure modes of long
+single-context runs — agentic laziness (stopping early), self-preferential
+bias (favoring your own output when judging it), and goal drift (compaction
+eroding the original requirements):
+
+- **Classify-and-act** — route each item by type before working on it.
+- **Fan-out-and-synthesize** — parallel workers, merged structured outputs.
+- **Adversarial verification** — a separate agent checks each worker's output
+  against a rubric (the two-wave shape above).
+- **Generate-and-filter** — produce many candidates, dedupe/filter by rubric.
+- **Tournament** — N agents attempt the same task, judged pairwise;
+  comparative judgment is more reliable than absolute scoring. Also the fix
+  for sorting/ranking at scale, where single-prompt quality degrades past
+  ~1000 rows.
+- **Loop-until-done** — iterate on a stop *condition*, not a fixed pass count
+  (pair `/loop` with `/goal` for continuous triage; see [[loops]]).
+- **Quarantine** — agents that read untrusted content get no high-privilege
+  actions; separate agents act on the vetted results.
+
+Give workflows an explicit token budget in the prompt ("use ~10k tokens") to
+cap spend. And the standing test before reaching for any of these:
+parallelism and specialization have to *earn their coordination cost* — most
+ordinary coding tasks do not need a panel of five reviewers.
 
 ## Cost discipline
 
