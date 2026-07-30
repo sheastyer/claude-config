@@ -23,16 +23,25 @@ contains code changes (skip only for trivial non-code commits — docs typos,
 3. **Give it the adversarial brief.** The reviewer's job is to find what's wrong,
    not to be agreeable. Have it hunt for: correctness bugs and edge cases, broken
    assumptions, race conditions, security issues, error handling, resource leaks,
-   missing/weak tests, and unintended behavior changes. It must end with an
-   explicit verdict:
+   missing/weak tests, and unintended behavior changes. **Tell it to report every
+   issue it finds — including ones it's uncertain about or considers low-severity
+   — with a confidence level and estimated severity per finding, and not to
+   self-filter for importance** (current models follow "only report serious
+   issues" so literally that real findings get silently dropped; you triage
+   severity when addressing the comments, not the reviewer when writing them).
+   It must end with an explicit verdict:
    - `APPROVE`, or
-   - `CHANGES REQUESTED` + a numbered list of specific, blocking comments.
+   - `CHANGES REQUESTED` + a numbered list of the blocking comments (the full
+     findings list, blocking and not, still gets reported above the verdict).
 
 4. **Address every comment.** Fix the code (or, if you disagree, reply with a
    concrete rebuttal). Then **re-review**: send the updated staged diff back to the
    same reviewer via `SendMessage` so it can verify its comments were resolved.
 
-5. **Loop until `APPROVE`.** Only then run `git commit`.
+5. **Loop until `APPROVE`.** Only then run `git commit`. (One find → fix →
+   re-check round is usually enough; if the reviewer is still finding new
+   blocking issues after two rounds, step back and reconsider the change rather
+   than grinding the loop.)
 
 6. **Record the approval for the commit gate.** A `PreToolUse` hook
    (`~/.claude/hooks/git-safety.sh`) blocks `git commit` until the hash of the

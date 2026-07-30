@@ -4,8 +4,7 @@ On ambiguous or unfamiliar work, the bottleneck usually isn't model capability
 — it's the gap between what the task statement says and what actually matters:
 the constraints I'd never think to write down, and the ones neither of us
 knows exist yet. Spend effort shrinking that gap at the edges of the task,
-not just executing the middle. (Source: "A field guide to Claude Fable 5",
-July 2026.)
+not just executing the middle.
 
 ## Before building
 
@@ -24,6 +23,11 @@ July 2026.)
 
 ## During
 
+- **Deliver at the scope intended.** Make routine judgment calls yourself and
+  check in only when different readings would lead to materially different
+  work. If the ask seems mistaken or a better approach exists, say so in a
+  sentence and keep going with the task as asked — don't quietly narrow,
+  widen, or transform it.
 - **Keep a deviations log.** On an edge case that forces a departure from the
   plan, pick the conservative option, record it under a "Deviations" heading
   in a scratch notes file, and keep going — don't stop to ask on every edge

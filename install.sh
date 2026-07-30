@@ -22,6 +22,8 @@ ITEMS=(
   # Skills are linked per-skill (not the whole skills/ dir) so repo skills can
   # coexist with machine-local ones already in ~/.claude/skills/.
   "skills/claude-code-blog-sync"
+  "skills/steering"
+  "skills/loop-design"
 )
 
 # Inode identity, not string equality: catches trailing-slash / relative / alias

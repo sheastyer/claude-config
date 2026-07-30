@@ -17,8 +17,10 @@ repo's own `CLAUDE.md`.
 @~/.claude/shared/model-selection.md
 @~/.claude/shared/advisor.md
 @~/.claude/shared/orchestration.md
-@~/.claude/shared/steering.md
 @~/.claude/shared/reducing-unknowns.md
 @~/.claude/shared/html-outputs.md
-@~/.claude/shared/loops.md
 @~/.claude/shared/session-hygiene.md
+
+Procedure guides that used to live here are now on-demand skills: `steering`
+(where a new instruction/automation belongs) and `loop-design` (picking loop
+primitives and stop conditions).
