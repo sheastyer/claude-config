@@ -1,3 +1,13 @@
+---
+name: steering
+description: >-
+  Decide where a new convention, instruction, or automation belongs — CLAUDE.md
+  vs a skill vs a hook vs a scoped rule vs a subagent — and how to write skills
+  well. ALWAYS load when adding a global or project convention, creating or
+  restructuring a skill, setting up an "always do X after Y" automation, or
+  reviewing whether existing CLAUDE.md content should move elsewhere.
+---
+
 # Steering — where an instruction belongs
 
 When adding a convention or automation, pick the mechanism by what the thing
@@ -55,5 +65,5 @@ criteria — showed the biggest quality gains of any category in Anthropic's
 internal use. When a workflow keeps getting hand-verified, that's the skill
 to write first.
 
-See [[orchestration]] for when the answer is "a subagent", and
-[[model-selection]] for which model that subagent should run on.
+See `shared/orchestration.md` for when the answer is "a subagent", and
+`shared/model-selection.md` for which model that subagent should run on.

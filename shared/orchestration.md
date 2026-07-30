@@ -1,110 +1,54 @@
 # Orchestrator / subagent delegation
 
-On **complex, multi-part tasks**, don't do everything yourself on one model.
-Act as an **orchestrator**: keep the high-judgment work on the capable model
-running this session, and fan the grunt work out to fresh subagents on cheaper
-models. This is the pattern the Claude Code team recommends (a Fable/Opus
-orchestrator that plans and delegates to Sonnet workers) and Claude Code ships
-natively (dynamic workflows, per-subagent models); the rules below make me use it
-by default. See [[model-selection]] for the cost tiers and [[pre-commit-review]]
-for the adversarial-verification habit this builds on.
+Opus 5 reaches for subagents readily — the failure mode to guard against is
+**over-delegation, not reluctance**. Every subagent is its own conversation:
+it re-establishes context, re-explores, reports back, and then the orchestrator
+re-reads the report. That multiplies token spend and latency, and on the Pro
+subscription it all draws down the same usage window. Delegate rarely and only
+when the payoff clearly exceeds that overhead.
 
-**Orchestration needs a task that *decomposes*.** If the work is a single hard
-thread with no grunt work to fan out, don't force a subagent split — reach for
-the [[advisor]] instead (escalate the decision points to a stronger second
-opinion). Orchestrate when there are parallel pieces; advise when there aren't.
+## When to delegate
 
-**Why this saves money:** the orchestrator's own token count stays small — it
-plans, delegates, and synthesizes — while the workers generate the bulk of the
-tokens at the cheaper worker rate. Most of the spend lands at the worker price,
-not the orchestrator's. That only holds if the workers are actually on a cheaper
-model (see the `inherit` trap below).
+**Do** use subagents for:
+- Genuinely independent, sizeable, parallelizable tracks — wide multi-file
+  investigations, unrelated modules, bulk mechanical sweeps.
+- Side-tasks whose intermediate output I'll never look at again (the subagent
+  test: "will I need the tool output, or just the conclusion?").
 
-## The split
+**Do NOT** use subagents for:
+- Work finishable directly in a handful of tool calls — a few reads, a few
+  edits, a simple search.
+- **Review, verification, or double-checking your own work.** Verification
+  belongs in the main loop; Opus 5 self-verifies without scaffolding.
+  (Independent checks that exist for *fresh perspective* are different: the
+  adversarial pre-commit reviewer ([[pre-commit-review]]) and a workflow's
+  verify wave both stand.)
+- Splitting one modest job into pieces so it *looks* parallel.
 
-**Keep on the orchestrator (the capable session model — Fable/Opus):**
-- The plan and the decomposition itself.
-- Architectural and judgment calls, trade-off decisions.
-- Integrating subagent results and making the final decisions.
-- The final answer, and anything that needs the full conversation context.
-
-**Delegate to cheaper subagents:**
-- File discovery, code search, reading many files (→ `haiku`/`sonnet`).
-- Bulk web research — fetching and digesting blog posts, docs pages, articles
-  (→ `sonnet`, batched a few sources per agent, returning structured digests).
-- Mechanical edits repeated across files, boilerplate drafting.
-- Running tests / builds and collecting output.
-- Independent investigations that only need to return a summary.
+**Caps:** if one subagent suffices, use one. Keep spawn counts low; never more
+than 20 parallel agents unless I explicitly ask for that scale.
 
 ## How to delegate
 
-- Spawn **fresh** subagents (not forks — a fork inherits my model and ignores a
-  `model` override) via the Agent tool, and **pass an explicit cheaper `model`**
-  per the tiers in [[model-selection]]: `haiku` for mechanical fan-out, `sonnet`
-  as the default worker, `opus` only when a subtask genuinely needs hard
-  reasoning, never `fable`.
-- **Why the explicit model matters:** Claude Code subagents default to
-  `inherit` — without an override they run on *my* model. So a Fable/Opus
-  orchestrator that doesn't set a cheaper `model` silently runs every subagent
-  at the orchestrator's rate, which is exactly the cost trap to avoid.
-- Run independent subtasks **in parallel** (spawn them in one turn) and let the
-  orchestrator synthesize.
-- **Concrete fan-out signals:** a task that means exploring ten or more files,
-  or three or more independent pieces of work. Below that, the coordination
-  overhead usually isn't worth it.
-- Never let two subagents edit the same file in parallel, and tell each one
-  exactly what to return — a summary, a diff, a verdict — not "do the thing."
-- Prime each subagent minimally — the specific subtask, the constraints it
-  can't infer, and where to look — not the whole conversation.
-- **Verify what matters.** For delegated results that feed a decision or a
-  commit, verify adversarially before trusting them (same habit as
-  [[pre-commit-review]]) — re-derive rather than taking the summary at face value.
+- Spawn **fresh** subagents with an explicit cheaper `model` per
+  [[model-selection]] — `sonnet` default, `haiku` for mechanical fan-out.
+  Without the override, workers silently inherit the session's Opus rate.
+- Brief precisely **once** — the specific subtask, constraints it can't infer,
+  where to look, and exactly what to return (a summary, a diff, a verdict).
+  Avoid launch → wait → re-brief cycles.
+- **Commit to the delegation.** Don't redo the subagent's work or re-derive its
+  findings once it reports back. (Results that feed a commit still go through
+  the pre-commit review gate — that's the checkpoint, not ad-hoc re-derivation.)
+- Independent subtasks spawn **in parallel, in one message**. Never let two
+  subagents edit the same file.
+- Run subagents at low effort.
 
-## Large fan-out — use native dynamic workflows
+## Large fan-out — native workflows
 
-For work that needs **more agents than one conversation can coordinate**
-(codebase-wide audits, large migrations, cross-checked research), reach for
-Claude Code's dynamic workflows instead of hand-spawning agents: say "use a
-workflow" (or `ultracode`) in the request, or run the bundled `/deep-research`.
-The runtime fans out dozens–hundreds of subagents in the background, keeps
-intermediate results out of my context, and is resumable.
-
-- When I author a workflow, **route grunt-work stages to a cheaper model** — the
-  script can send different stages to different models, and workflow agents
-  otherwise default to the session's model.
-- Prefer the two-wave shape where it fits: workers produce results, then a
-  second wave adversarially verifies them before they're reported.
-
-## Named workflow patterns
-
-Seven shapes worth asking for by name (from Anthropic's dynamic-workflows
-post, June 2026). They exist to counter three failure modes of long
-single-context runs — agentic laziness (stopping early), self-preferential
-bias (favoring your own output when judging it), and goal drift (compaction
-eroding the original requirements):
-
-- **Classify-and-act** — route each item by type before working on it.
-- **Fan-out-and-synthesize** — parallel workers, merged structured outputs.
-- **Adversarial verification** — a separate agent checks each worker's output
-  against a rubric (the two-wave shape above).
-- **Generate-and-filter** — produce many candidates, dedupe/filter by rubric.
-- **Tournament** — N agents attempt the same task, judged pairwise;
-  comparative judgment is more reliable than absolute scoring. Also the fix
-  for sorting/ranking at scale, where single-prompt quality degrades past
-  ~1000 rows.
-- **Loop-until-done** — iterate on a stop *condition*, not a fixed pass count
-  (pair `/loop` with `/goal` for continuous triage; see [[loops]]).
-- **Quarantine** — agents that read untrusted content get no high-privilege
-  actions; separate agents act on the vetted results.
-
-Give workflows an explicit token budget in the prompt ("use ~10k tokens") to
-cap spend. And the standing test before reaching for any of these:
-parallelism and specialization have to *earn their coordination cost* — most
-ordinary coding tasks do not need a panel of five reviewers.
-
-## Cost discipline
-
-Fan-out multiplies token spend — each subagent is its own conversation. Delegate
-when the task's size justifies it; for a small or trivial task, just do it
-directly on the current model. Match the effort to the subtask: run subagents at
-low effort so they make fewer, more-consolidated tool calls.
+For work beyond what one conversation can coordinate (codebase-wide audits,
+large migrations, cross-checked research), say "use a workflow" (or `ultracode`)
+or run `/deep-research` rather than hand-spawning dozens of agents. Route
+grunt-work stages to cheaper models, prefer a verify wave for results that feed
+decisions, and give workflows an explicit token budget in the prompt. The
+standing test before any of this: parallelism must *earn its coordination cost*
+— an ordinary coding task does not need a panel of five reviewers.
