@@ -5,9 +5,11 @@ with an advisor model consulted at key moments — before committing to an
 approach, when the same error keeps recurring, and before declaring a task done.
 The advisor reads the full conversation in a fresh context and returns guidance.
 
-**Pairing on this setup: Opus 5 main → Opus 5 advisor** (`/advisor opus`) — an
+**Default pairing: Opus main → Opus advisor** (`/advisor opus`) — an
 independent second Opus, free of the session's anchoring. The advisor must be ≥
-the main model, and Opus 5 is the ceiling on Pro, so this is the pairing.
+the main model. On Max a Fable advisor is also allowed (if `/advisor` offers
+it); reserve it for the hardest, highest-stakes tasks — it costs 2× Opus per
+call.
 
 ## When it fits
 
@@ -28,6 +30,6 @@ orchestrate instead ([[orchestration]]); if it's short, just do it.
 ## Cost honesty
 
 Each call re-sends the full transcript to the advisor, uncached, at Opus rates —
-and on Pro that draws down the same usage window as the session itself. Reserve
+and on Max that draws down the same usage window as the session itself. Reserve
 it for genuinely hard problems and suggest turning it off when the task ends.
 Requires the Anthropic first-party backend and Claude Code v2.1.98+.
