@@ -3,7 +3,7 @@
 Opus 5 reaches for subagents readily — the failure mode to guard against is
 **over-delegation, not reluctance**. Every subagent is its own conversation:
 it re-establishes context, re-explores, reports back, and then the orchestrator
-re-reads the report. That multiplies token spend and latency, and on the Pro
+re-reads the report. That multiplies token spend and latency, and on the Max
 subscription it all draws down the same usage window. Delegate rarely and only
 when the payoff clearly exceeds that overhead.
 
